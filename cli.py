@@ -23,7 +23,7 @@ def fetch_chart(url):
     return data
 
 def convert(currency, exchange):
-    url = 'https://v6.exchangerate-api.com/v6/4ddce1eec5ce1cc3e518a495/latest/USD'
+    url = 'https://v6.exchangerate-api.com/v6/YOUR-API-KEY/latest/USD'
 
     response = requests.get(url)
     data = response.json()
@@ -102,4 +102,3 @@ if __name__ == '__main__':
 
     else:
         usage()
-        
