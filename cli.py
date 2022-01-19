@@ -22,31 +22,62 @@ def fetch_chart(url):
 
     return data
 
-def convert(currency, exchange):
-    url = 'https://v6.exchangerate-api.com/v6/YOUR-API-KEY/latest/USD'
+def convert(currency: list, exchange):
+    if currency[0] == "USD" or "usd":
+        url = 'https://v6.exchangerate-api.com/v6/ef977f211c62be97aeff5d2a/latest/USD'
 
-    response = requests.get(url)
-    data = response.json()
+        response = requests.get(url)
+        data = response.json()
 
-    usd = data['conversion_rates']['USD']
-    mxn = data['conversion_rates']['MXN']
-    eur = data['conversion_rates']['EUR']
-    aud = data['conversion_rates']['AUD']
+        usd = data['conversion_rates']['USD']
+        mxn = data['conversion_rates']['MXN']
+        eur = data['conversion_rates']['EUR']
+        aud = data['conversion_rates']['AUD']
+
+        if "MXN" in exchange:
+            exchange_total_mxn = mxn * currency[1]
+
+            return exchange_total_mxn
+
+        elif "EUR" in exchange:
+            exchange_total_eur = eur * currency[1]
+
+            return exchange_total_eur
+
+        elif "AUD" in exchange:
+            exchange_total_aud = aud * currency[1]
+
+    # One of each currency (1 MXN, AUD, EUR, USD)
+
+    unit_exchange = {
+        'mxn_usd': 1 / mxn,
+        'mxn_eur': 1 / mxn,
+        'mxn_aud': 1 / mxn,
+        'eur_usd': 1 / usd,
+        'eur_mxn': 1 / mxn,
+        'eur_aud': 1 / aud,
+        'aud_eur': 1 / eur
+    }
 
     if "MXN" in exchange:
-        exchange_total_mxn = mxn * currency
+        exchange_total_mxn = mxn * currency[1]
     
         return exchange_total_mxn
 
     elif "EUR" in exchange:
-        exchange_total_eur = eur * currency
+        exchange_total_eur = eur * currency[1]
 
         return exchange_total_eur
 
     elif "AUD" in exchange:
-        exchange_total_aud = aud * currency
+        exchange_total_aud = aud * currency[1]
 
         return exchange_total_aud
+
+    elif "USD" in exchange:
+        exchange_total_usd = usd * currency[1]
+
+        return exchange_total_usd
 
     else:
         raise Exception('Unknown exchange')
@@ -62,7 +93,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    url = 'https://v6.exchangerate-api.com/v6/4ddce1eec5ce1cc3e518a495/latest/USD'
+    url = 'https://v6.exchangerate-api.com/v6/ef977f211c62be97aeff5d2a/latest/USD'
 
     if args.help is True:
         usage()
@@ -82,6 +113,14 @@ if __name__ == '__main__':
                 currency = float(args.currency[1])
 
                 # If the user types in lowercase
+                args.exchange = args.exchange.upper()
+
+                _exchange = convert(currency, args.exchange)
+                print(f'{round(_exchange, 2)} {args.exchange}')
+
+            elif "MXN" or "mxn" in args.currency[0]:
+                currency = float(args.currency[1])
+
                 args.exchange = args.exchange.upper()
 
                 _exchange = convert(currency, args.exchange)
