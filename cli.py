@@ -35,59 +35,54 @@ def convert(currency: list, exchange):
         aud = data['conversion_rates']['AUD']
 
         if "MXN" in exchange:
-            exchange_total_mxn = mxn * currency[1]
+            exchange_total_mxn = mxn * float(currency[1])
 
             return exchange_total_mxn
 
         elif "EUR" in exchange:
-            exchange_total_eur = eur * currency[1]
+            exchange_total_eur = eur * float(currency[1])
 
             return exchange_total_eur
 
         elif "AUD" in exchange:
-            exchange_total_aud = aud * currency[1]
+            exchange_total_aud = aud * float(currency[1])
 
-    # One of each currency (1 MXN, AUD, EUR, USD)
+            return exchange_total_aud
 
-    unit_exchange = {
-        'mxn_usd': 1 / mxn,
-        'mxn_eur': 1 / mxn,
-        'mxn_aud': 1 / mxn,
-        'eur_usd': 1 / usd,
-        'eur_mxn': 1 / mxn,
-        'eur_aud': 1 / aud,
-        'aud_eur': 1 / eur
-    }
+    elif currency[0] == "MXN" or 'mxn':
+        url = 'https://v6.exchangerate-api.com/v6/ef977f211c62be97aeff5d2a/latest/MXN'
 
-    if "MXN" in exchange:
-        exchange_total_mxn = mxn * currency[1]
-    
-        return exchange_total_mxn
+        response = requests.get(url)
+        data = response.json()
 
-    elif "EUR" in exchange:
-        exchange_total_eur = eur * currency[1]
+        mxn = data['conversion_rates']['MXN']
+        usd = data['conversion_rates']['USD']
+        eur = data['conversion_rates']['EUR']
+        aud = data['conversion_rates']['EUR']
 
-        return exchange_total_eur
+        if "USD" in exchange:
+            exchange_total_usd = usd * float(currency[1])
 
-    elif "AUD" in exchange:
-        exchange_total_aud = aud * currency[1]
+            return exchange_total_usd
 
-        return exchange_total_aud
+        elif "EUR" in exchange:
+            exchange_total_eur = eur * float(currency[1])
 
-    elif "USD" in exchange:
-        exchange_total_usd = usd * currency[1]
+            return exchange_total_eur
+        
+        elif "AUD" in exchange:
+            exhange_total_aud = aud * float(currency[1])
 
-        return exchange_total_usd
-
+            return exchange_total_aud     
     else:
-        raise Exception('Unknown exchange')
+        assert False, "unknown currency"
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Currency converter CLI', add_help=False)
 
     parser.add_argument('-h', '--help', action='store_true')
-    parser.add_argument('-c', '--currency', nargs="+")
+    parser.add_argument('-c', '--currency', nargs=2)
     parser.add_argument('-e', '--exchange', type=str)
     parser.add_argument('-r', '--request', action='store_true')
 
@@ -97,7 +92,7 @@ if __name__ == '__main__':
 
     if args.help is True:
         usage()
-    
+        
     elif args.request:
         try:
             data = fetch_chart(url)
@@ -110,21 +105,17 @@ if __name__ == '__main__':
     elif args.currency and args.exchange:
         if len(args.currency) > 1:
             if "USD" or "usd" in args.currency[0]:
-                currency = float(args.currency[1])
-
                 # If the user types in lowercase
                 args.exchange = args.exchange.upper()
 
-                _exchange = convert(currency, args.exchange)
-                print(f'{round(_exchange, 2)} {args.exchange}')
+                _exchange = convert(args.currency, args.exchange)
+                print(f'{_exchange} {args.exchange}')
 
             elif "MXN" or "mxn" in args.currency[0]:
-                currency = float(args.currency[1])
-
                 args.exchange = args.exchange.upper()
 
-                _exchange = convert(currency, args.exchange)
-                print(f'{round(_exchange, 2)} {args.exchange}')
+                _exchange = convert(args.currency, args.exchange)
+                print(f'{_exchange} {args.exchange}')
         
             else:
                 raise Exception('unknown currency')
