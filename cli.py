@@ -22,8 +22,8 @@ def fetch_chart(url):
 
     return data
 
-def convert(currency: list, exchange):
-    if currency[0] == "USD" or "usd":
+def convert(currency: list, exchange: str):    
+    if currency[0] == "USD":
         url = 'https://v6.exchangerate-api.com/v6/ef977f211c62be97aeff5d2a/latest/USD'
 
         response = requests.get(url)
@@ -48,8 +48,11 @@ def convert(currency: list, exchange):
             exchange_total_aud = aud * float(currency[1])
 
             return exchange_total_aud
+        
+        else:
+            raise Exception('misspelling error')
 
-    elif currency[0] == "MXN" or 'mxn':
+    elif currency[0] == "MXN":
         url = 'https://v6.exchangerate-api.com/v6/ef977f211c62be97aeff5d2a/latest/MXN'
 
         response = requests.get(url)
@@ -73,9 +76,12 @@ def convert(currency: list, exchange):
         elif "AUD" in exchange:
             exhange_total_aud = aud * float(currency[1])
 
-            return exchange_total_aud     
+            return exchange_total_aud
+
+        else:
+            raise Exception('unknown exchange')     
     else:
-        assert False, "unknown currency"
+        raise Exception('unknown currency')
 
 
 if __name__ == '__main__':
@@ -107,19 +113,35 @@ if __name__ == '__main__':
             if "USD" or "usd" in args.currency[0]:
                 # If the user types in lowercase
                 args.exchange = args.exchange.upper()
+                args.currency[0] = args.currency[0].upper()
 
                 _exchange = convert(args.currency, args.exchange)
-                print(f'{_exchange} {args.exchange}')
+                print(f'{args.currency[1]} {args.currency[0]} \u2015> {round(_exchange, 2)} {args.exchange}')
 
             elif "MXN" or "mxn" in args.currency[0]:
                 args.exchange = args.exchange.upper()
+                args.currency[0] = args.currency[0].upper()
+
 
                 _exchange = convert(args.currency, args.exchange)
-                print(f'{_exchange} {args.exchange}')
+                print(f'{args.currency[1]} {args.currency[0]} \u2015> {round(_exchange, 2)} {args.exchange}')
+            
+            elif "EUR" or "eur" in args.currency[0]:
+                args.exchange = args.exchange.upper()
+                args.currency[0] = args.currency[0].upper()
+
+                _exchange = convert(args.currency, args.exchange)
+                print(f'{args.currency[1]} {args.currency[0]} \u2015> {round(_exchange, 2)} {args.exchange}')
+            
+            elif "AUD" or "aud" in args.currency[0]:
+                args.exchange = args.exchange.upper()
+                args.currency[0] = args.currency[0].upper()
+
+                _exchange = convert(args.currency, args.exchange)
+                print(f'{args.currency[1]} {args.currency[0]} \u2015> {round(_exchange, 2)} {args.exchange}')
         
             else:
                 raise Exception('unknown currency')
-
     
     elif args.currency and args.exchange:
         pass
