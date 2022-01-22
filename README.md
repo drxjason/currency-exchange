@@ -1,6 +1,6 @@
 # Currency Converter
 
-**⚠️You will need an api key from [ExchangeRate-API](exchangerate-api.com)⚠️**
+**⚠️You will need an api key from [ExchangeRate-API](https://exchangerate-api.com)⚠️**
 
 **This program is unfinished, there may be bugs, here is what features is planned on this program:**
 
